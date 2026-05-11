@@ -5,38 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QM Right Pricing Command Center | Centerfield Health & Medicare</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 :root {
-  --bg: #080e1a;
-  --surface: #0c1525;
-  --surface2: #101d30;
-  --surface3: #142038;
-  --border: rgba(255,255,255,0.06);
-  --border2: rgba(255,255,255,0.11);
-  --border3: rgba(255,255,255,0.18);
-  --teal: #00c896;
-  --teal-dim: rgba(0,200,150,0.12);
-  --teal-glow: rgba(0,200,150,0.25);
-  --gold: #f0a500;
-  --gold-dim: rgba(240,165,0,0.12);
-  --red: #ff4d4d;
-  --red-dim: rgba(255,77,77,0.12);
-  --blue: #4d9eff;
+  --bg:       #1c1c1c;
+  --surface:  #252525;
+  --surface2: #2e2e2e;
+  --surface3: #383838;
+  --border:   rgba(255,255,255,0.08);
+  --border2:  rgba(255,255,255,0.15);
+  --border3:  rgba(255,255,255,0.22);
+  --teal:     #29b6d8;
+  --teal-dim: rgba(41,182,216,0.13);
+  --teal-glow:rgba(41,182,216,0.25);
+  --gold:     #ffb830;
+  --gold-dim: rgba(255,184,48,0.13);
+  --red:      #ff5555;
+  --red-dim:  rgba(255,85,85,0.12);
+  --blue:     #4d9eff;
   --blue-dim: rgba(77,158,255,0.12);
-  --amber: #ffb84d;
-  --amber-dim: rgba(255,184,77,0.12);
-  --purple: #9d7eff;
-  --white: #fff;
-  --w80: rgba(255,255,255,0.8);
-  --w60: rgba(255,255,255,0.6);
+  --amber:    #ffb830;
+  --amber-dim:rgba(255,184,48,0.13);
+  --purple:   #a07eff;
+  --white:    #ffffff;
+  --w80: rgba(255,255,255,0.80);
+  --w60: rgba(255,255,255,0.60);
   --w35: rgba(255,255,255,0.35);
   --w15: rgba(255,255,255,0.15);
   --w08: rgba(255,255,255,0.08);
   --w04: rgba(255,255,255,0.04);
-  --font: 'DM Sans', sans-serif;
-  --font-head: 'Syne', sans-serif;
+  --font:      'Inter', sans-serif;
+  --font-head: 'Barlow Condensed', sans-serif;
   --font-mono: 'IBM Plex Mono', monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -557,6 +557,8 @@ textarea.pub-comment::placeholder{color:var(--w35)}
 .dp-now:hover{color:var(--w60,rgba(255,255,255,0.6));border-color:var(--w35,rgba(255,255,255,0.35))}
 
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -1408,6 +1410,25 @@ function renderSubIDs() {
 
 /* ─── SCORECARD DATA FROM NOTION ─── */
 const SCORECARD_DATA = [
+  /* ── SEP April 2026 actuals ── */
+  {pub:"Paragon",                      season:"SEP",spend:135758, ib:7210, d1:5161, rawCalls:7210, billableCalls:null,billableRate:null,cr:0.096,transfers:null,transferRate:null,dupRate:0.029,contacts:5161,netSales:374, cpa:265, eff:0.704,age75:0.129,talkHours:2483.9,actionBand:"Maintain",      status:"Healthy",biggestRisk:"Effectuation 70.4% — slightly below 72% benchmark",                                             topOpp:"Highest Net Sales in Maintain band — scale upside significant if GPpTH improves",            date:"2026-04-30"},
+  {pub:"EngageCX",                     season:"SEP",spend:203262,ib:6791, d1:5387, rawCalls:6791, billableCalls:null,billableRate:null,cr:0.098,transfers:null,transferRate:null,dupRate:0.042,contacts:5387,netSales:437, cpa:413, eff:0.731,age75:0.274,talkHours:3168.9,actionBand:"Throttle",      status:"Watch",  biggestRisk:"GPpTH $36 and Over75 27.4% on highest-volume Throttle partner — outsized portfolio impact",   topOpp:"950 sold policies — largest volume opportunity outside Maintain/Scale tiers",                    date:"2026-04-30"},
+  {pub:"Adolent Marketing",            season:"SEP",spend:70380, ib:5751, d1:4058, rawCalls:5751, billableCalls:null,billableRate:null,cr:0.062,transfers:null,transferRate:null,dupRate:0.055,contacts:4058,netSales:220, cpa:294, eff:0.706,age75:0.669,talkHours:1990.1,actionBand:"Throttle",      status:"Watch",  biggestRisk:"Over75 66.9% — highest in portfolio. Immediate compliance escalation required.",              topOpp:"284 sold policies at strong CPA — compliance resolution must precede any volume discussion",         date:"2026-04-30"},
+  {pub:"UAB Inulti",                   season:"SEP",spend:66816, ib:5526, d1:3862, rawCalls:5526, billableCalls:null,billableRate:null,cr:0.067,transfers:null,transferRate:null,dupRate:0.031,contacts:3862,netSales:167, cpa:275, eff:0.709,age75:0.564,talkHours:1061,  actionBand:"Throttle",      status:"Watch",  biggestRisk:"Over75 56.4% is nearly 4× the 15% benchmark — urgent compliance review required",             topOpp:"Large volume at 372 net sales — if demo risk corrected, score would move quickly",           date:"2026-04-30"},
+  {pub:"Quote Velocity",               season:"SEP",spend:126735,ib:5335, d1:3730, rawCalls:5335, billableCalls:null,billableRate:null,cr:0.100,transfers:null,transferRate:null,contacts:3730,netSales:286, cpa:352, eff:0.753,age75:0.049,talkHours:1355.6,actionBand:"Monitor",       status:"Watch",  biggestRisk:"GPpTH $53 below $75 benchmark — holding score in Monitor",                                       topOpp:"Lowest Over75% in Monitor tier — compliance-clean partner with volume scale potential",       date:"2026-04-30"},
+  {pub:"SkyLab Digital",               season:"SEP",spend:109669,ib:4432, d1:3545, rawCalls:4432, billableCalls:null,billableRate:null,cr:0.099,transfers:null,transferRate:null,contacts:3545,netSales:297, cpa:369, eff:0.740,age75:0.110,talkHours:1820.0,actionBand:"Maintain",      status:"Healthy",biggestRisk:"GPpTH slightly below benchmark — primary score drag",                                              topOpp:"Strong volume and clean demo profile — GPpTH improvement unlocks Scale Eligible",             date:"2026-04-30"},
+  {pub:"RateQuote",                    season:"SEP",spend:32967, ib:4067, d1:1064, rawCalls:4067, billableCalls:null,billableRate:null,cr:0.080,transfers:null,transferRate:null,contacts:1064,netSales:58,  cpa:430, eff:0.637,age75:0.194,talkHours:615.7, actionBand:"Throttle",      status:"Watch",  biggestRisk:"Effectuation 63.7% — lowest Eff% in Throttle tier, well below 72% benchmark",                  topOpp:"Meaningful volume but requires Eff% and GPpTH improvement before expansion",                 date:"2026-04-30"},
+  {pub:"Scalability.io",               season:"SEP",spend:48114, ib:4007, d1:1393, rawCalls:4007, billableCalls:null,billableRate:null,cr:0.106,transfers:null,transferRate:null,contacts:1393,netSales:104, cpa:369, eff:0.784,age75:0.096,talkHours:809.9, actionBand:"Maintain",      status:"Healthy",biggestRisk:"GPpTH $57 below $75 benchmark — primary score drag",                                             topOpp:"7 points from Scale Eligible — GPpTH improvement is the single lever",                       date:"2026-04-30"},
+  {pub:"DigiPeak LLC",                 season:"SEP",spend:60200, ib:3720, d1:2515, rawCalls:3720, billableCalls:null,billableRate:null,cr:0.072,transfers:null,transferRate:null,dupRate:0.047,contacts:2515,netSales:126, cpa:383, eff:0.714,age75:0.072,talkHours:2884.3,actionBand:"Throttle",      status:"Watch",  biggestRisk:"GPpTH $34 and CR 7.2% both below benchmark — economics and conversion gap",                   topOpp:"Cleanest demo profile in Throttle tier at 7.2% Over75 — compliance upside if economics improve",date:"2026-04-30"},
+  {pub:"Milestone Marketing Solutions",season:"SEP",spend:105715,ib:3329, d1:2445, rawCalls:3329, billableCalls:null,billableRate:null,cr:0.110,transfers:null,transferRate:null,dupRate:0.038,contacts:2445,netSales:196, cpa:442, eff:0.789,age75:0.184,talkHours:1403.7,actionBand:"Monitor",       status:"Watch",  biggestRisk:"GPpTH $42 significantly below $75 benchmark — largest economics gap in Monitor tier",           topOpp:"Highest volume in Monitor — GPpTH improvement would have largest portfolio impact",          date:"2026-04-30"},
+  {pub:"The Wisdom Companies LLC",     season:"SEP",spend:45900, ib:2705, d1:1875, rawCalls:2705, billableCalls:null,billableRate:null,cr:0.079,transfers:null,transferRate:null,contacts:1875,netSales:101, cpa:316, eff:0.851,age75:0.141,talkHours:562.5, actionBand:"Monitor",       status:"Watch",  biggestRisk:"CR 7.9% below 9% benchmark — conversion gap is the primary score drag",                        topOpp:"Effectuation 85.1% — highest durability in Monitor tier. CR coaching would unlock Maintain.",date:"2026-04-30"},
+  {pub:"Insurco",                      season:"SEP",spend:62955, ib:2601, d1:1587, rawCalls:2601, billableCalls:null,billableRate:null,cr:0.082,transfers:null,transferRate:null,dupRate:0.033,contacts:1587,netSales:91,  cpa:564, eff:0.813,age75:0.094,talkHours:1210.5,actionBand:"Monitor",       status:"Watch",  biggestRisk:"Negative GPpTH (-$2) — floored to 50. Entire score drag is economics.",                       topOpp:"If GPpTH turns positive, Maintain band is within immediate reach",                            date:"2026-04-30"},
+  {pub:"HLG Solutions",                season:"SEP",spend:15092, ib:1171, d1:435,  rawCalls:1171, billableCalls:null,billableRate:null,cr:0.090,transfers:null,transferRate:null,contacts:435, netSales:29,  cpa:464, eff:0.600,age75:0.125,talkHours:23.1,  actionBand:"Throttle",      status:"Watch",  biggestRisk:"Zero GPpTH and Effectuation 60.0% — lowest Eff% among active partners",                        topOpp:"CR at exact benchmark — conversion foundation there if economics and Eff% improve",           date:"2026-04-30"},
+  {pub:"Palo Media Group",             season:"SEP",spend:26565, ib:1081, d1:815,  rawCalls:1081, billableCalls:null,billableRate:null,cr:0.085,transfers:null,transferRate:null,contacts:815, netSales:49,  cpa:542, eff:0.720,age75:0.150,talkHours:450.0, actionBand:"Monitor",       status:"Watch",  biggestRisk:"CPA above target and GPpTH below floor",                                                         topOpp:"Solid Eff% — economics improvement would move to Maintain",                                  date:"2026-04-30"},
+  {pub:"RevRise Media",                season:"SEP",spend:6650,  ib:269,  d1:200,  rawCalls:269,  billableCalls:null,billableRate:0.256,cr:0.148,transfers:null,transferRate:0.253,contacts:200,netSales:18,  cpa:231, eff:0.873,age75:0.433,talkHours:75.7,  actionBand:"Scale Eligible",status:"Healthy",biggestRisk:"Demo Mix 43.3% Over75 — nearly 3× the 15% benchmark. Compliance risk.",                         topOpp:"Strongest Eff% in portfolio at 87.3% — durability leader once demo risk corrected",          date:"2026-04-30"},
+  {pub:"Healthcare.com",               season:"SEP",spend:360,   ib:18,   d1:8,    rawCalls:18,   billableCalls:null,billableRate:null,cr:0.194,transfers:null,transferRate:null,contacts:8,   netSales:1,   cpa:240, eff:0.667,age75:0.000,talkHours:6.7,   actionBand:"Scale Eligible",status:"Healthy",biggestRisk:"Over75 = 0.0% — confirm not a data gap before scaling",                                         topOpp:"Highest MPQS in portfolio — immediate scale candidate pending 0% Over75 confirmation",        date:"2026-04-30"},
+  {pub:"Barrington Media Group",       season:"SEP",spend:911,   ib:11,   d1:6,    rawCalls:11,   billableCalls:null,billableRate:null,cr:0.172,transfers:null,transferRate:null,dupRate:0.058,contacts:6,   netSales:1,   cpa:973, eff:0.768,age75:0.375,talkHours:793.8,actionBand:"Throttle",      status:"Watch",  biggestRisk:"GPpTH -$117 and Over75 37.5% — economics and compliance both flagged simultaneously",          topOpp:"CR 17.2% is a genuine strength — if CPA corrected, conversion quality is portfolio-leading", date:"2026-04-30"},
+  /* ── OEP records (kept for OEP season view) ── */
   {pub:"Quote Velocity",               season:"OEP",spend:126735, ib:5335, d1:3730, rawCalls:5335,billableCalls:null, billableRate:null, cr:0.100,transfers:null,transferRate:null, contacts:3730, netSales:286, cpa:352, eff:0.753,age75:0.049,talkHours:1355.6,actionBand:"Monitor",       status:"Watch",   biggestRisk:"GPpTH $53 below $75 benchmark — holding score in Monitor",                                        topOpp:"Lowest Over75% in Monitor tier — compliance-clean partner with volume scale potential",date:"2026-02-28"},
   {pub:"Elijay Marketing Solutions",   season:"OEP",rawCalls:41,  billableCalls:null, billableRate:null, cr:0.049,transfers:null,transferRate:null, netSales:2,   cpa:663, eff:0.364,age75:0.670,talkHours:59.3,   actionBand:"Pullback",      status:"At Risk", biggestRisk:"Lowest MPQS in portfolio. Negative GPpTH, Eff% 36.4%, Over75 67.0% — all components flagged",  topOpp:"None — requires full program review before reinstatement",                            date:"2026-02-28"},
   {pub:"The Wisdom Companies LLC",     season:"OEP",spend:45900, ib:2705, d1:1875, rawCalls:2705,billableCalls:null, billableRate:null, cr:0.079,transfers:null,transferRate:null, contacts:1875, netSales:101, cpa:316, eff:0.851,age75:0.141,talkHours:562.5,  actionBand:"Monitor",       status:"Watch",   biggestRisk:"CR 7.9% below 9% benchmark — conversion gap is the primary score drag",                         topOpp:"Effectuation 85.1% — highest durability in Monitor tier. CR coaching would unlock Maintain.",date:"2026-02-28"},
@@ -1430,9 +1451,14 @@ const PUB_COMMENTS = {};
 
 function getScorecardForPub(name) {
   const norm = s => s.toLowerCase().replace(/[^a-z0-9]/g,'');
-  const exact = SCORECARD_DATA.find(s => norm(s.pub) === norm(name));
+  // Try active season first, then fall back to any season for same publisher
+  const exact = SCORECARD_DATA.find(s => norm(s.pub) === norm(name) && s.season === activeSeason)
+             || SCORECARD_DATA.find(s => norm(s.pub) === norm(name));
   if (exact) return exact;
   return SCORECARD_DATA.find(s =>
+    (norm(name).includes(norm(s.pub.split(' ')[0])) ||
+    norm(s.pub).includes(norm(name.split(' ')[0]))) && s.season === activeSeason
+  ) || SCORECARD_DATA.find(s =>
     norm(name).includes(norm(s.pub.split(' ')[0])) ||
     norm(s.pub).includes(norm(name.split(' ')[0]))
   ) || null;
@@ -1852,6 +1878,12 @@ function buildPartnerCard(d, forPortal=false) {
   </div>`}
   ${forPortal ? '' : joaniePredictor(d)}
     ${buildCommentsBox(d.name, forPortal)}
+    <div style="margin-top:12px;display:flex;justify-content:flex-end;">
+      <button id="scorecard-pdf-btn" onclick="downloadScorecardPDF('${d.name.replace(/'/g,"\\'")}','scorecard-pdf-btn')" style="display:flex;align-items:center;gap:6px;background:var(--teal);color:#000;border:none;padding:8px 18px;border-radius:5px;cursor:pointer;font-size:10px;font-weight:700;font-family:var(--font-mono);letter-spacing:.06em;text-transform:uppercase;transition:opacity .15s;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span class="pdf-btn-label">Download PDF</span>
+      </button>
+    </div>
   </div>`;
 }
 
@@ -2589,8 +2621,44 @@ document.addEventListener('click', function(e) {
   var pubName = btn.getAttribute('data-pub');
   if (uid && pubName) jpReset(uid, pubName);
 });
+
+/* ─── SCORECARD PDF DOWNLOAD ─── */
+async function downloadScorecardPDF(partnerName, btnId) {
+  const btn   = document.getElementById(btnId);
+  const label = btn ? btn.querySelector('.pdf-btn-label') : null;
+  const card  = document.getElementById('partner-detail') || document.getElementById('portal-content');
+  if (!card) return;
+  if (btn)   { btn.disabled = true; btn.style.opacity = '0.6'; }
+  if (label) { label.textContent = 'Generating…'; }
+  try {
+    const { jsPDF } = window.jspdf;
+    const canvas = await html2canvas(card, {
+      scale: 2, useCORS: true, backgroundColor: '#1c1c1c', logging: false
+    });
+    const imgData = canvas.toDataURL('image/png');
+    const imgW = canvas.width, imgH = canvas.height;
+    const usePortrait = (imgH / imgW) > 1.0;
+    const pdf = usePortrait
+      ? new jsPDF({ orientation:'portrait',  unit:'mm', format:'a4' })
+      : new jsPDF({ orientation:'landscape', unit:'mm', format:'a4' });
+    const pw = pdf.internal.pageSize.getWidth();
+    const ph = pdf.internal.pageSize.getHeight();
+    const r  = Math.min(pw / (imgW/2), ph / (imgH/2));
+    pdf.addImage(imgData, 'PNG', (pw-(imgW/2)*r)/2, (ph-(imgH/2)*r)/2, (imgW/2)*r, (imgH/2)*r);
+    const slug = partnerName.replace(/[^a-z0-9]/gi,'_').toLowerCase();
+    pdf.save('QM_Scorecard_'+slug+'_'+activeSeason+'_'+new Date().toISOString().slice(0,10)+'.pdf');
+    if (label) { label.textContent = '✓ Downloaded'; }
+    if (btn)   { btn.style.background = '#1a9e6e'; btn.style.opacity = '1'; }
+    setTimeout(()=>{
+      if (btn)   { btn.disabled=false; btn.style.background='var(--teal)'; }
+      if (label) { label.textContent='Download PDF'; }
+    }, 2500);
+  } catch(err) {
+    console.error('PDF error:', err);
+    if (btn)   { btn.disabled=false; btn.style.opacity='1'; }
+    if (label) { label.textContent='Download PDF'; }
+  }
+}
 </script>
 </body>
 </html>
-
-
