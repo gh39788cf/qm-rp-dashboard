@@ -6,6 +6,8 @@
 <title>QM Partner Scorecard · Centerfield Health & Medicare</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root {
   --navy: #0A1628;
@@ -325,11 +327,27 @@ body {
   font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
   padding: 9px 20px; border-radius: 6px; cursor: pointer; border: none;
   background: var(--teal); color: #fff;
-  transition: background .15s; flex-shrink: 0;
+  transition: background .15s, opacity .15s; flex-shrink: 0;
   font-family: var(--font);
+  position: relative; min-width: 148px; justify-content: center;
 }
-.pdf-btn:hover { background: #1b8f69; }
+.pdf-btn:hover:not(:disabled) { background: #1b8f69; }
+.pdf-btn:disabled { opacity: 0.7; cursor: wait; }
 .pdf-btn svg { flex-shrink: 0; }
+.pdf-btn .btn-spinner {
+  display: none;
+  width: 13px; height: 13px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.pdf-btn.loading .btn-spinner { display: block; }
+.pdf-btn.loading .btn-icon { display: none; }
+.pdf-btn.done { background: #156b4e; }
+
 
 /* FOOTER */
 .portal-footer {
@@ -426,14 +444,6 @@ body {
   <div class="tb-right">
     <span class="tb-season" id="tb-season">SEP</span>
     <span class="tb-date" id="tb-date"></span>
-    <button class="pdf-btn" onclick="downloadPDF()" id="pdf-btn-top">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-        <polyline points="7 10 12 15 17 10"/>
-        <line x1="12" y1="15" x2="12" y2="3"/>
-      </svg>
-      Download PDF
-    </button>
   </div>
 </div>
 
@@ -497,13 +507,14 @@ body {
         Season targets apply · Right Pricing formula: LTV × Eff% × LTV% × CR% × MPQS × SubID_QI ·
         Questions? Contact your Centerfield account manager.
       </div>
-      <button class="pdf-btn" onclick="downloadPDF()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <button class="pdf-btn" id="pdf-btn" onclick="downloadPDF()">
+        <span class="btn-spinner"></span>
+        <svg class="btn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
           <polyline points="7 10 12 15 17 10"/>
           <line x1="12" y1="15" x2="12" y2="3"/>
         </svg>
-        Download PDF
+        <span class="btn-label">Download PDF</span>
       </button>
     </div>
 
@@ -778,16 +789,109 @@ function renderScorecard(d) {
   // Footer season
   document.getElementById('footer-season').textContent = SEASONS[activeSeason].label;
 
-  // Show scorecard + PDF button
+  // Show scorecard
   document.getElementById('locked-view').style.display = 'none';
   document.getElementById('scorecard').style.display = 'flex';
   document.getElementById('portal-footer').style.display = 'block';
-  document.getElementById('pdf-btn-top').style.display = 'flex';
 }
 
 /* ─── PDF DOWNLOAD ─── */
-function downloadPDF() {
-  window.print();
+async function downloadPDF() {
+  const btn = document.getElementById('pdf-btn');
+  const label = btn.querySelector('.btn-label');
+  const scorecard = document.getElementById('scorecard');
+
+  // Button loading state
+  btn.disabled = true;
+  btn.classList.add('loading');
+  label.textContent = 'Generating…';
+
+  // Temporarily hide the action row and footer for clean capture
+  const actionRow = document.querySelector('.sc-action-row');
+  const portalFooter = document.getElementById('portal-footer');
+  const topbar = document.querySelector('.topbar');
+  const origActionDisplay  = actionRow  ? actionRow.style.display  : '';
+  const origFooterDisplay  = portalFooter ? portalFooter.style.display : '';
+  const origTopbarDisplay  = topbar ? topbar.style.display : '';
+  if (actionRow)    actionRow.style.display    = 'none';
+  if (portalFooter) portalFooter.style.display = 'none';
+  if (topbar)       topbar.style.display       = 'none';
+
+  // Show print footer during capture
+  const printFooter = document.getElementById('print-footer');
+  if (printFooter) printFooter.style.display = 'block';
+
+  try {
+    const { jsPDF } = window.jspdf;
+
+    const canvas = await html2canvas(scorecard, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#0A1628',
+      logging: false,
+      windowWidth: 860,
+    });
+
+    const imgData = canvas.toDataURL('image/png');
+    const imgW    = canvas.width;
+    const imgH    = canvas.height;
+
+    // Fit to PDF page (landscape A4: 297 x 210 mm)
+    const pdfW = 297;
+    const pdfH = 210;
+    const ratio    = Math.min(pdfW / (imgW / 2), pdfH / (imgH / 2));
+    const drawW    = (imgW / 2) * ratio;
+    const drawH    = (imgH / 2) * ratio;
+    const offsetX  = (pdfW - drawW) / 2;
+    const offsetY  = (pdfH - drawH) / 2;
+
+    // If card is taller than landscape, use portrait
+    const usePortrait = (imgH / imgW) > 1.1;
+    const pdf = usePortrait
+      ? new jsPDF({ orientation:'portrait',  unit:'mm', format:'a4' })
+      : new jsPDF({ orientation:'landscape', unit:'mm', format:'a4' });
+
+    const pw = pdf.internal.pageSize.getWidth();
+    const ph = pdf.internal.pageSize.getHeight();
+    const r2 = Math.min(pw / (imgW / 2), ph / (imgH / 2));
+    const dw = (imgW / 2) * r2;
+    const dh = (imgH / 2) * r2;
+    const ox = (pw - dw) / 2;
+    const oy = (ph - dh) / 2;
+
+    pdf.addImage(imgData, 'PNG', ox, oy, dw, dh);
+
+    // Partner name for filename
+    const partnerName = (document.getElementById('sc-name').textContent || 'scorecard')
+      .replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    const dateStamp = new Date().toISOString().slice(0,10);
+
+    pdf.save(`QM_Scorecard_${partnerName}_${activeSeason}_${dateStamp}.pdf`);
+
+    // Done state
+    btn.classList.remove('loading');
+    btn.classList.add('done');
+    label.textContent = '✓ Downloaded';
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.classList.remove('done');
+      label.textContent = 'Download PDF';
+    }, 2800);
+
+  } catch (err) {
+    console.error('PDF generation error:', err);
+    // Fallback to print dialog
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    label.textContent = 'Download PDF';
+    window.print();
+  } finally {
+    // Restore hidden elements
+    if (actionRow)    actionRow.style.display    = origActionDisplay;
+    if (portalFooter) portalFooter.style.display = origFooterDisplay;
+    if (topbar)       topbar.style.display       = origTopbarDisplay;
+    if (printFooter)  printFooter.style.display  = 'none';
+  }
 }
 
 /* ─── INIT ─── */
