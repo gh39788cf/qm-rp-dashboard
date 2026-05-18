@@ -178,12 +178,6 @@ body::before{
 .tbtn.on{color:var(--teal);border-bottom-color:var(--teal)}
 .tpanel{display:none}
 .tpanel.on{display:block}
-/* ── DATA FRESHNESS STAMP ── */
-.data-stamp{display:flex;align-items:center;gap:8px;padding:6px 14px;margin-bottom:16px;background:rgba(29,158,117,0.06);border:1px solid rgba(29,158,117,0.14);border-radius:6px;font-size:11px;}
-.ds-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0;box-shadow:0 0 0 3px rgba(29,158,117,0.18);}
-.ds-tab{font-weight:600;color:var(--teal-light);}
-.ds-txt{color:var(--w35);}
-.ds-ok{margin-left:auto;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:rgba(29,158,117,0.12);color:var(--teal);border:1px solid rgba(29,158,117,0.2);}
 .tab-panel{display:none}
 .tab-panel.on{display:block}
 
@@ -562,6 +556,12 @@ textarea.pub-comment::placeholder{color:var(--w35)}
 .dp-now{font-size:9px;font-family:var(--font-mono,'IBM Plex Mono'),monospace;font-weight:600;padding:3px 8px;border-radius:4px;border:1px solid var(--border2,rgba(255,255,255,0.1));background:transparent;color:var(--w35,rgba(255,255,255,0.35));cursor:pointer;transition:all .12s}
 .dp-now:hover{color:var(--w60,rgba(255,255,255,0.6));border-color:var(--w35,rgba(255,255,255,0.35))}
 
+
+.data-stamp{display:flex;align-items:center;gap:8px;padding:6px 14px;margin-bottom:16px;background:rgba(29,158,117,0.06);border:1px solid rgba(29,158,117,0.14);border-radius:6px;font-size:11px;}
+.ds-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0;box-shadow:0 0 0 3px rgba(29,158,117,0.18);}
+.ds-tab{font-weight:600;color:var(--teal-light);}
+.ds-txt{color:var(--w35);}
+.ds-ok{margin-left:auto;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:rgba(29,158,117,0.12);color:var(--teal);border:1px solid rgba(29,158,117,0.2);}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -2876,7 +2876,6 @@ function buildDispositionBreakdown(sc) {
   const otherDisp   = heraEst ? heraEst - (agentHU+consumerHU+noCoverage+ivrDrop+noZip) : null;
 
   const buckets = [
-    { label:'Billable / Paid',    count:billable,    color:'var(--teal)',    desc:'Calls accepted & billed — your revenue-generating calls' },
     { label:'Transferred',        count:xfers,       color:'var(--blue)',    desc:'Calls routed to a licensed agent for consultation' },
     { label:'Duplicate Caller',   count:dups,        color:'var(--amber)',   desc:'Repeat callers already in system — not billable' },
     { label:'Consumer Hung Up',   count:consumerHU,  color:'#ff9966',       desc:'Consumer disconnected before qualifying — call intent or friction issue' },
@@ -2969,11 +2968,7 @@ function buildCallMetrics(sc, pricePerCall) {
         <div class="ck-val">${fmtNum(sc.rawCalls)}</div>
         <div class="ck-sub">Total calls sent</div>
       </div>
-      <div class="ck-item">
-        <div class="ck-label">Billable / Paid</div>
-        <div class="ck-val" style="color:${billableColor}">${fmtNum(billableCount)}</div>
-        <div class="ck-sub">${billableLabel}</div>
-      </div>
+
       <div class="ck-item">
         <div class="ck-label">D1 60+s / Inbound %</div>
         <div class="ck-val" style="color:${billableRateColor}">${billableRate}</div>
@@ -3089,22 +3084,7 @@ function buildCommentsBox(pubName, forPortal) {
     </div>`;
   }
 
-  const previewHtml = saved.trim()
-    ? `<div style="margin-top:8px;padding:8px 10px;background:rgba(0,200,150,0.04);border:1px solid rgba(0,200,150,0.12);border-radius:4px;font-size:10px;color:var(--w60);font-family:var(--font-mono);line-height:1.6;white-space:pre-wrap">${escaped}</div>`
-    : '';
-
-  return `<div class="comments-section">
-    <div class="cs-header">
-      <span class="cs-title">Internal Notes &amp; HOOPS Updates — ${pubName}</span>
-      <span class="cs-saved" id="cs-saved-${safeId}"></span>
-    </div>
-    <textarea class="pub-comment" id="comment-${safeId}" placeholder="Add coaching points, HOOPS updates, context, or partner notes for ${pubName}…" rows="3">${saved}</textarea>
-    <div class="cs-footer">
-      <button class="cs-save-btn" onclick="saveComment('${pubName}','${safeId}')">Save Note</button>
-      <span style="font-size:9px;color:var(--w35);font-family:var(--font-mono);margin-left:8px">Notes appear in Partner Portal view once saved</span>
-    </div>
-    ${previewHtml}
-  </div>`;
+  return '';
 }
 
 
@@ -3203,12 +3183,12 @@ function buildPartnerCard(d, forPortal=false) {
   const whatItMeans = `
     <div style="margin-top:14px;background:rgba(0,200,150,0.05);border:1px solid rgba(0,200,150,0.2);border-radius:6px;padding:12px 16px">
       <div style="font-size:9px;font-weight:700;color:var(--teal);font-family:var(--font-mono);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px">What this means for you</div>
-      <div style="font-size:11px;color:var(--w60);line-height:1.7;font-family:var(--font-mono)">
-        ${d.actualCpa&&d.actualCpa>t.cpa
-          ? `Your current cost per acquisition ($${d.actualCpa}) is <span style="color:#ff8080">$${Math.round(d.actualCpa-t.cpa)} above</span> our target of $${t.cpa}. Your enhanced right-priced bid is $${enhBid.toFixed(0)}. Focus on improving effectuation toward ${t.eff}% and reducing rapid dis-enrollment below ${t.rde}% to earn a higher bid and better placement.`
-          : d.actualCpa&&d.actualCpa<=t.cpa
-          ? `Your CPA ($${d.actualCpa}) is <span style="color:var(--teal)">$${Math.round(t.cpa-d.actualCpa)} below our target</span> — strong performance. Your enhanced bid of $${enhBid.toFixed(0)} reflects your ${g}-grade MPQS profile. Maintain your Sub ID mix and quality to hold or improve this pricing.`
-          : `No active spend recorded this season. When you activate, your enhanced right-priced bid will be $${enhBid.toFixed(0)}, based on your ${g}-grade MPQS profile and Sub ID quality index of ×${qi.toFixed(2)}.`}
+      <div contenteditable="true" spellcheck="false"
+           data-pub="${d.name}"
+           onblur="(function(el){var k='wtm_'+el.dataset.pub;if(!window.PUB_WTM)window.PUB_WTM={};window.PUB_WTM[k]=el.innerHTML;try{localStorage.setItem(k,el.innerHTML);}catch(e){};el.style.background='';})(this)"
+           onfocus="this.style.background='rgba(0,200,150,0.04)'"
+           style="font-size:11px;color:var(--w60);line-height:1.7;font-family:var(--font-mono);outline:none;min-height:40px;cursor:text;border-radius:4px;transition:background .15s;">
+        ${(function(nm,cpa,tcpa,eff,rde,bid,g,qi){var k='wtm_'+nm;var sv=(window.PUB_WTM&&window.PUB_WTM[k])||null;try{sv=sv||localStorage.getItem(k);}catch(e){}if(sv)return sv;if(cpa&&cpa>tcpa)return 'Your current cost per acquisition ($'+cpa+') is <span style="color:#ff8080">$'+Math.round(cpa-tcpa)+' above</span> our target of $'+tcpa+'. Your enhanced right-priced bid is $'+bid+'. Focus on improving effectuation toward '+eff+'% and reducing rapid dis-enrollment below '+rde+'% to earn a higher bid and better placement.';if(cpa&&cpa<=tcpa)return 'Your CPA ($'+cpa+') is <span style="color:var(--teal)">$'+Math.round(tcpa-cpa)+' below our target</span> — strong performance. Your enhanced bid of $'+bid+' reflects your '+g+'-grade MPQS profile. Maintain your Sub ID mix and quality to hold or improve this pricing.';return 'No active spend recorded this season. When you activate, your enhanced right-priced bid will be $'+bid+', based on your '+g+'-grade MPQS profile and Sub ID quality index of x'+qi.toFixed(2)+'.';})(d.name,d.actualCpa,t.cpa,t.eff,t.rde,enhBid.toFixed(0),g,qi)}
       </div>
     </div>`;
 
@@ -3231,26 +3211,19 @@ function buildPartnerCard(d, forPortal=false) {
       <div class="pf"><div class="pf-l">Enhanced RP Bid</div><div class="pf-v" style="color:var(--teal)">${enhBid>0?'$'+enhBid.toFixed(0):'—'}</div></div>
       <div class="pf"><div class="pf-l">Base Bid</div><div class="pf-v" style="color:var(--w60)">$${baseBid.toFixed(0)}</div></div>
       <div class="pf"><div class="pf-l">Target CPA</div><div class="pf-v">$${t.cpa}</div></div>
-  <div class="pf"><div class="pf-l">Current Price/Billable Call</div><div class="pf-v" style="color:var(--teal)">${d.baseBid?'$'+d.baseBid.toFixed(0):'—'}</div></div>div></div>
+      <div class="pf"><div class="pf-l">Target Effectuation</div><div class="pf-v">${t.eff}%</div></div>
+      <div class="pf"><div class="pf-l">Target CR</div><div class="pf-v">${t.cr}%</div></div>
+  <div class="pf"><div class="pf-l">Current Bid</div><div class="pf-v" style="color:var(--teal)">${d.baseBid?'$'+d.baseBid.toFixed(0):'—'}</div></div>
       <div class="pf" style="flex:2"><div class="pf-l">Sub IDs Tracked</div><div style="font-size:12px;font-weight:700;color:var(--w60);margin-top:3px;font-family:var(--font-mono)">${d.subIds.join(' · ')||'—'}</div></div>
     </div>
-    <div class="pc-rp-formula">
-      <div class="pc-formula-title">Enhanced RP Calculation</div>
-      <div class="pc-formula-row">
-        <span class="pfc">Base: <strong>$${baseBid.toFixed(2)}</strong></span>
-        <span class="pfc">MPQS ${g}: <strong>×${mpqsMult}</strong></span>
-        <span class="pfc">Sub ID QI: <strong>×${qi.toFixed(2)}</strong></span>
-        <span class="pfc">→ Enhanced Bid: <strong>$${enhBid.toFixed(0)}</strong></span>
-        <span class="pfc" style="margin-left:auto;color:var(--w35)">LTV × Eff% × LTV% × CR% × MPQS × SubID_QI</span>
-      </div>
-    </div>
+
     ${d.notes?`<div class="pnotes">${d.notes}</div>`:''}
     ${buildCallMetrics(sc, d.baseBid)}
     ${buildDispositionView(sc, d.baseBid)}
     ${buildDispositionBreakdown(sc)}
     ${buildSubIdDetail(d)}
     ${whatItMeans}
-    ${forPortal ? '' : `<div style="margin-top:10px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;display:flex;align-items:center;justify-content:space-between">
+    ${forPortal ? '' : `<div class="pdf-hide" style="margin-top:10px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;display:flex;align-items:center;justify-content:space-between">
     <div style="font-size:9px;font-weight:700;font-family:var(--font-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--w35)">Cost per D1 60+s Call</div>
     <div style="display:flex;align-items:baseline;gap:8px">
       <span style="font-size:18px;font-weight:800;font-family:var(--font-head);color:${cpd1Color}">${cpd1Val}</span>
@@ -3488,7 +3461,6 @@ function showTab(id, btn) {
   if (id==='charts') setTimeout(renderCharts, 50);
   if (id==='ping')   { setTimeout(renderPingAnalysis, 50); setTimeout(pingPredInit, 150); }
   if (id==='disp')   setTimeout(renderDispTab, 50);
-  // data freshness stamp
   const _tn={rp:'Right Pricing',mpqs:'MPQS Scorecard',subid:'Sub ID Intel',partner:'Partner View',disp:'Call Dispositions',ping:'Ping Analysis',charts:'Charts'};
   const _ts={rp:'Notion pull · Media CPA · SEP season',mpqs:'Notion pull · Eff% = April actuals (carrier confirmed May 17) · SEP season',subid:'Notion pull · Sub ID QI · SEP season',partner:'Notion pull · SEP season',disp:'Notion pull · SEP season',ping:'Notion pull · SEP season',charts:'Notion pull · SEP season'};
   if(document.getElementById('stamp-tab')){document.getElementById('stamp-tab').textContent=_tn[id]||id;document.getElementById('stamp-src').textContent=_ts[id]||'Notion pull · SEP season';}
@@ -4017,21 +3989,24 @@ async function downloadScorecardPDF(partnerName, btnId) {
   if (!card) return;
   if (btn)   { btn.disabled = true; btn.style.opacity = '0.6'; }
   if (label) { label.textContent = 'Generating…'; }
+  // Hide sections not shown on partner-facing PDF: Joanie Predicts (.jp), Cost per D1 (.pdf-hide)
+  const pdfHide = card.querySelectorAll('.jp, .pdf-hide, .comments-section, .cs-save-btn, #scorecard-pdf-btn');
+  pdfHide.forEach(el => { el._pdfOld = el.style.display; el.style.display = 'none'; });
+  const scorecard = card.querySelector('.partner-scorecard') || card;
   try {
     const { jsPDF } = window.jspdf;
-    const canvas = await html2canvas(card, {
-      scale: 2, useCORS: true, backgroundColor: '#1c1c1c', logging: false
+    const canvas = await html2canvas(scorecard, {
+      scale: 3, useCORS: true, backgroundColor: null, logging: false
     });
     const imgData = canvas.toDataURL('image/png');
-    const imgW = canvas.width, imgH = canvas.height;
-    const usePortrait = (imgH / imgW) > 1.0;
-    const pdf = usePortrait
-      ? new jsPDF({ orientation:'portrait',  unit:'mm', format:'a4' })
-      : new jsPDF({ orientation:'landscape', unit:'mm', format:'a4' });
-    const pw = pdf.internal.pageSize.getWidth();
-    const ph = pdf.internal.pageSize.getHeight();
-    const r  = Math.min(pw / (imgW/2), ph / (imgH/2));
-    pdf.addImage(imgData, 'PNG', (pw-(imgW/2)*r)/2, (ph-(imgH/2)*r)/2, (imgW/2)*r, (imgH/2)*r);
+    const imgW = canvas.width / 3;
+    const imgH = canvas.height / 3;
+    const pdf  = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pw   = pdf.internal.pageSize.getWidth();
+    const ph   = pdf.internal.pageSize.getHeight();
+    const margin = 10;
+    const scale  = Math.min((pw - margin*2) / imgW, (ph - margin*2) / imgH);
+    pdf.addImage(imgData, 'PNG', margin, margin, imgW * scale, imgH * scale);
     const slug = partnerName.replace(/[^a-z0-9]/gi,'_').toLowerCase();
     pdf.save('QM_Scorecard_'+slug+'_'+activeSeason+'_'+new Date().toISOString().slice(0,10)+'.pdf');
     if (label) { label.textContent = '✓ Downloaded'; }
@@ -4044,6 +4019,8 @@ async function downloadScorecardPDF(partnerName, btnId) {
     console.error('PDF error:', err);
     if (btn)   { btn.disabled=false; btn.style.opacity='1'; }
     if (label) { label.textContent='Download PDF'; }
+  } finally {
+    pdfHide.forEach(el => { el.style.display = el._pdfOld !== undefined ? el._pdfOld : ''; });
   }
 }
 </script>
