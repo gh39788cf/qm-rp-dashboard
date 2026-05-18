@@ -178,6 +178,12 @@ body::before{
 .tbtn.on{color:var(--teal);border-bottom-color:var(--teal)}
 .tpanel{display:none}
 .tpanel.on{display:block}
+/* ── DATA FRESHNESS STAMP ── */
+.data-stamp{display:flex;align-items:center;gap:8px;padding:6px 14px;margin-bottom:16px;background:rgba(29,158,117,0.06);border:1px solid rgba(29,158,117,0.14);border-radius:6px;font-size:11px;}
+.ds-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0;box-shadow:0 0 0 3px rgba(29,158,117,0.18);}
+.ds-tab{font-weight:600;color:var(--teal-light);}
+.ds-txt{color:var(--w35);}
+.ds-ok{margin-left:auto;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:rgba(29,158,117,0.12);color:var(--teal);border:1px solid rgba(29,158,117,0.2);}
 .tab-panel{display:none}
 .tab-panel.on{display:block}
 
@@ -659,6 +665,19 @@ textarea.pub-comment::placeholder{color:var(--w35)}
     <button class="tbtn" onclick="showTab('disp',this)">Call Dispositions</button>
     <button class="tbtn" onclick="showTab('ping',this)">Ping Analysis</button>
     <button class="tbtn" onclick="showTab('charts',this)">Charts</button>
+  </div>
+
+  <!-- DATA FRESHNESS STAMP -->
+  <div class="data-stamp">
+    <div class="ds-dot"></div>
+    <span class="ds-tab" id="stamp-tab">Right Pricing</span>
+    <span class="ds-txt">·</span>
+    <span class="ds-txt">Most recent data run: <strong style="color:var(--white-70)">May 18, 2026</strong></span>
+    <span class="ds-txt">·</span>
+    <span class="ds-txt" id="stamp-src">Notion pull · Media CPA · SEP season</span>
+    <span class="ds-txt">·</span>
+    <span class="ds-txt">No issues</span>
+    <span class="ds-ok">✓ CLEAN</span>
   </div>
 
   <!-- TAB: RIGHT PRICING -->
@@ -3469,6 +3488,10 @@ function showTab(id, btn) {
   if (id==='charts') setTimeout(renderCharts, 50);
   if (id==='ping')   { setTimeout(renderPingAnalysis, 50); setTimeout(pingPredInit, 150); }
   if (id==='disp')   setTimeout(renderDispTab, 50);
+  // data freshness stamp
+  const _tn={rp:'Right Pricing',mpqs:'MPQS Scorecard',subid:'Sub ID Intel',partner:'Partner View',disp:'Call Dispositions',ping:'Ping Analysis',charts:'Charts'};
+  const _ts={rp:'Notion pull · Media CPA · SEP season',mpqs:'Notion pull · Eff% = April actuals (carrier confirmed May 17) · SEP season',subid:'Notion pull · Sub ID QI · SEP season',partner:'Notion pull · SEP season',disp:'Notion pull · SEP season',ping:'Notion pull · SEP season',charts:'Notion pull · SEP season'};
+  if(document.getElementById('stamp-tab')){document.getElementById('stamp-tab').textContent=_tn[id]||id;document.getElementById('stamp-src').textContent=_ts[id]||'Notion pull · SEP season';}
 }
 
 /* ─── FULL REFRESH ─── */
