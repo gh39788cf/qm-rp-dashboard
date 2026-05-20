@@ -3078,7 +3078,6 @@ function buildSubIdDetail(d, forPortal=false) {
       <div class="sid-qi">Bid QI: <strong style="color:${qiC}">×${si.qi.toFixed(2)}</strong></div>
       <div class="sid-metrics">
         <div class="sid-row"><span>CR</span><span>${si.cr}%</span></div>
-        ${forPortal ? '' : '<div class="sid-row pdf-hide"><span>GP/TH</span><span>$${si.gpth}</span></div>'}
         <div class="sid-row"><span>Eff%</span><span>${si.eff}%</span></div>
         <div class="sid-row"><span>RDE</span><span>${si.rde}%</span></div>
         <div class="sid-row"><span>Age75+</span><span>${si.age75}%</span></div>
@@ -3244,7 +3243,7 @@ function buildPartnerCard(d, forPortal=false) {
       <div class="pf" style="flex:2"><div class="pf-l">Sub IDs Tracked</div><div style="font-size:12px;font-weight:700;color:var(--w60);margin-top:3px;font-family:var(--font-mono)">${d.subIds.join(' · ')||'—'}</div></div>
     </div>
 
-    ${d.notes?`<div class="pnotes">${d.notes}</div>`:''}
+    ${(!forPortal && d.notes)?`<div class="pnotes pdf-hide">${d.notes}</div>`:''}
     ${buildCallMetrics(sc, d.baseBid)}
     ${buildDispositionView(sc, d.baseBid)}
     ${buildDispositionBreakdown(sc)}
