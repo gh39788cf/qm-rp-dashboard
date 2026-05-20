@@ -3605,6 +3605,8 @@ function refreshAll() {
 /* ─── INIT ─── */
 loadData();
 refreshAll();
+// Auto-pull from Notion on every page load so data is always live
+setTimeout(handlePull, 800);
 document.getElementById('sync-dot').className='sync-dot live';
 document.getElementById('sync-label').textContent='Live · Notion';
 setTimeout(()=>{
