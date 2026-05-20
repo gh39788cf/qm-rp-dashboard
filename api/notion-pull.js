@@ -23,10 +23,7 @@ export default async function handler(req, res) {
     const body = {
       page_size: 100,
       filter: {
-        and: [
-          { property: 'Season',  select: { equals: season } },
-          { property: 'Status',  select: { does_not_equal: 'ARCHIVED' } }
-        ]
+        property: 'Season', select: { equals: season }
       }
     };
 
