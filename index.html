@@ -3459,17 +3459,74 @@ function buildTicker() {
 }
 
 /* ─── SYNC HANDLERS ─── */
-function handlePull() {
-  const dot = document.getElementById('sync-dot');
+async function handlePull() {
+  const dot   = document.getElementById('sync-dot');
   const label = document.getElementById('sync-label');
-  dot.className='sync-dot';
-  dot.style.background='var(--blue)';
-  label.textContent='Pulling…';
-  setTimeout(()=>{
-    dot.className='sync-dot live';
-    label.textContent='Live · Notion';
+
+  dot.className = 'sync-dot';
+  dot.style.background = 'var(--blue)';
+  label.textContent = 'Pulling…';
+
+  try {
+    const res  = await fetch('/api/notion-pull');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+
+    if (!data.publishers || !data.publishers.length) throw new Error('No records returned');
+
+    // API returns camelCase — map back to raw Notion field names so loadData() can process normally
+    NOTION_DATA.length = 0;
+    data.publishers.forEach(p => {
+      NOTION_DATA.push({
+        'Publisher':           p.name,
+        'Season':              p.season,
+        'MPQS Score':          p.mpqsGrade,
+        'GP/TH':               p.gpth,
+        'Adjusted LTV':        p.ltv,
+        'Actual CPA':          p.actualCpa,
+        'Target CPA':          p.targetCpa,
+        'Suggested Bid':       p.baseBid,
+        'Bid Floor':           p.bidFloor != null ? p.bidFloor : p.baseBid,
+        'Effectuation %':      p.eff,
+        'RDE %':               p.rde,
+        'Demo Age Over 75 %':  p.age75,
+        'SC % 60+':            p.sc60,
+        'Conversion Rate %':   p.cr,
+        'Sub IDs':             Array.isArray(p.subIds) ? p.subIds.join(', ') : (p.subIds || ''),
+        'RP Action':           p.rpAction,
+        'Action Band':         p.actionBand,
+        'Status':              p.status,
+        'CPA Delta':           p.cpaDelta,
+        'Partner Notes':       p.partnerNotes || p.notes || '',
+      });
+    });
+
+    // Re-process and re-render
+    loadData();
     refreshAll();
-  },1200);
+
+    // Update data freshness stamp
+    const pulled = new Date(data.pulledAt);
+    const dateStr = pulled.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+    const strongEl = document.querySelector('.data-stamp strong');
+    if (strongEl) strongEl.textContent = dateStr;
+
+    // UI: success
+    dot.className = 'sync-dot live';
+    dot.style.background = '';
+    label.textContent = 'Live · Notion';
+
+  } catch(err) {
+    console.error('Pull Notion failed:', err);
+    dot.className = 'sync-dot';
+    dot.style.background = 'var(--red, #e05)';
+    label.textContent = 'Pull failed — check console';
+    setTimeout(() => {
+      dot.className = 'sync-dot live';
+      dot.style.background = '';
+      label.textContent = 'Not synced';
+    }, 4000);
+  }
 }
 
 function handlePush() {
