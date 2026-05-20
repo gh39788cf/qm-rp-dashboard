@@ -82,6 +82,7 @@ export default async function handler(req, res) {
       actualCpa:     getProp(p, 'Actual CPA',       'number'),
       targetCpa:     getProp(p, 'Target CPA',       'number'),
       baseBid:       getProp(p, 'Suggested Bid',    'number'),
+      bidFloor:      getProp(p, 'Bid Floor',        'number'),
       eff:           getProp(p, 'Effectuation %',   'number'),
       rde:           getProp(p, 'RDE %',            'number'),
       age75:         getProp(p, 'Demo Age Over 75 %','number'),
