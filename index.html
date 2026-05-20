@@ -3486,7 +3486,7 @@ async function handlePull() {
         'Actual CPA':          p.actualCpa,
         'Target CPA':          p.targetCpa,
         'Suggested Bid':       p.baseBid,
-        'Bid Floor':           p.bidFloor != null ? p.bidFloor : p.baseBid,
+        'Bid Floor':           p.bidFloor != null ? p.bidFloor : (p.baseBid != null ? p.baseBid : (NOTION_DATA.find(r=>r['Publisher']===p.name)||{})['Bid Floor'] || null),
         'Effectuation %':      p.eff,
         'RDE %':               p.rde,
         'Demo Age Over 75 %':  p.age75,
