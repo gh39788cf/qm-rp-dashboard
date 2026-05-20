@@ -23,8 +23,10 @@ export default async function handler(req, res) {
     const body = {
       page_size: 100,
       filter: {
-        property: 'Season',
-        select: { equals: season }
+        and: [
+          { property: 'Season',  select: { equals: season } },
+          { property: 'Status',  select: { does_not_equal: 'ARCHIVED' } }
+        ]
       }
     };
 
@@ -78,7 +80,7 @@ export default async function handler(req, res) {
           notes:        str('Partner Notes'),
         };
       })
-      .filter(p => p.name); // drop blank rows
+      .filter(p => p.name && !p.name.startsWith('ARCHIVED')); // drop blank + archived
 
     return res.status(200).json({
       ok:        true,
