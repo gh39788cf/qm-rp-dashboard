@@ -3068,7 +3068,7 @@ function buildDispositionView(sc, pricePerCall) {
   </div>`;
 } // end buildDispositionView
 
-function buildSubIdDetail(d) {
+function buildSubIdDetail(d, forPortal=false) {
   if (!d.subIds || d.subIds.length===0) return '';
   const cards = d.subIds.map(id=>{
     const si=SUBID_MAP[id]; if(!si) return '';
@@ -3078,7 +3078,7 @@ function buildSubIdDetail(d) {
       <div class="sid-qi">Bid QI: <strong style="color:${qiC}">×${si.qi.toFixed(2)}</strong></div>
       <div class="sid-metrics">
         <div class="sid-row"><span>CR</span><span>${si.cr}%</span></div>
-        <div class="sid-row"><span>GP/TH</span><span>$${si.gpth}</span></div>
+        ${forPortal ? '' : '<div class="sid-row pdf-hide"><span>GP/TH</span><span>$${si.gpth}</span></div>'}
         <div class="sid-row"><span>Eff%</span><span>${si.eff}%</span></div>
         <div class="sid-row"><span>RDE</span><span>${si.rde}%</span></div>
         <div class="sid-row"><span>Age75+</span><span>${si.age75}%</span></div>
@@ -3248,7 +3248,7 @@ function buildPartnerCard(d, forPortal=false) {
     ${buildCallMetrics(sc, d.baseBid)}
     ${buildDispositionView(sc, d.baseBid)}
     ${buildDispositionBreakdown(sc)}
-    ${buildSubIdDetail(d)}
+    ${buildSubIdDetail(d, forPortal)}
     ${whatItMeans}
     ${forPortal ? '' : `<div class="pdf-hide" style="margin-top:10px;padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:6px;display:flex;align-items:center;justify-content:space-between">
     <div style="font-size:9px;font-weight:700;font-family:var(--font-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--w35)">Cost per D1 60+s Call</div>
