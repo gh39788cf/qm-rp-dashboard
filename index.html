@@ -2569,7 +2569,7 @@ function loadData() {
       ltv:         r['Adjusted LTV'],
       actualCpa:   scMatch ? scMatch.cpa         : r['Actual CPA'],
       targetCpa:   r['Target CPA'],
-      baseBid:     r['Bid Floor'],
+      baseBid:     r['Bid Floor'] != null ? r['Bid Floor'] : 0,
       eff:         scMatch ? Math.round(scMatch.eff * 100) : r['Effectuation %'],
       rde:         r['RDE %'],
       age75:       scMatch ? Math.round(scMatch.age75 * 100) : r['Demo Age Over 75 %'],
@@ -3235,8 +3235,8 @@ function buildPartnerCard(d, forPortal=false) {
       </div>`).join('')}
     </div>
     <div class="pc-footer">
-      ${forPortal ? '' : '<div class="pf pdf-hide"><div class="pf-l">Enhanced RP Bid</div><div class="pf-v" style="color:var(--teal)">'+( enhBid>0?'$'+enhBid.toFixed(0):'—' )+'</div></div>'}
-      ${forPortal ? '' : '<div class="pf pdf-hide"><div class="pf-l">Base Bid</div><div class="pf-v" style="color:var(--w60)">$'+baseBid.toFixed(0)+'</div></div>'}
+      ${forPortal ? '' : '<div class="pf pdf-hide"><div class="pf-l">Enhanced RP Bid</div><div class="pf-v" style="color:var(--teal)">'+(enhBid!=null&&enhBid>0?'$'+Math.round(enhBid):'—')+'</div></div>'}
+      ${forPortal ? '' : '<div class="pf pdf-hide"><div class="pf-l">Base Bid</div><div class="pf-v" style="color:var(--w60)">'+(baseBid!=null?'$'+baseBid.toFixed(0):'—')+'</div></div>'}
       <div class="pf"><div class="pf-l">Target CPA</div><div class="pf-v">$${t.cpa}</div></div>
       <div class="pf"><div class="pf-l">Target Effectuation</div><div class="pf-v">${t.eff}%</div></div>
       <div class="pf"><div class="pf-l">Target CR</div><div class="pf-v">${t.cr}%</div></div>
@@ -4080,7 +4080,10 @@ document.addEventListener('click', function(e) {
 async function downloadScorecardPDF(partnerName, btnId) {
   const btn   = document.getElementById(btnId);
   const label = btn ? btn.querySelector('.pdf-btn-label') : null;
-  const card  = document.getElementById('partner-detail') || document.getElementById('portal-content');
+  // Use portal-content if portal is visibly open, otherwise use partner-detail
+  const portalOverlay = document.getElementById('portal-overlay');
+  const portalOpen = portalOverlay && window.getComputedStyle(portalOverlay).display !== 'none';
+  const card = portalOpen ? document.getElementById('portal-content') : document.getElementById('partner-detail');
   if (!card) return;
   if (btn)   { btn.disabled = true; btn.style.opacity = '0.6'; }
   if (label) { label.textContent = 'Generating…'; }
