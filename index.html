@@ -3504,6 +3504,15 @@ async function handlePull() {
     // Re-process and re-render
     loadData();
     refreshAll();
+    // If a partner card is open, re-render it with fresh data
+    const openCard = document.getElementById('partner-detail');
+    if (openCard && openCard.style.display !== 'none') {
+      const pubName = openCard.querySelector('.pc-name')?.textContent?.trim();
+      if (pubName) {
+        const fresh = PUBS.find(p => p.name === pubName);
+        if (fresh) openCard.innerHTML = buildPartnerCard(fresh, false);
+      }
+    }
 
     // Update data freshness stamp
     const pulled = new Date(data.pulledAt);
