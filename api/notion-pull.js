@@ -44,8 +44,17 @@ export default async function handler(req, res) {
 
     const data = await r.json();
 
+    // Sort pages newest-first by Notion creation timestamp before mapping,
+    // so that deduplication below always retains the most recently created
+    // scorecard when a publisher appears more than once in the season.
+    const sortedResults = [...data.results].sort(
+      (a, b) => new Date(b.created_time) - new Date(a.created_time)
+    );
+
     // Map Notion properties to the shape the dashboard expects
-    const publishers = data.results
+    const seen = new Set(); // tracks publisher names already added
+
+    const publishers = sortedResults
       .filter(p => !p.archived && !p.in_trash)
       .map(page => {
         const P = page.properties;
@@ -75,9 +84,18 @@ export default async function handler(req, res) {
           status:       sel('Status'),
           cpaDelta:     num('CPA Delta'),
           notes:        str('Partner Notes'),
+          createdAt:    page.created_time,       // retained for transparency/debugging
+          lastEditedAt: page.last_edited_time,   // retained for transparency/debugging
         };
       })
-      .filter(p => p.name && !p.name.startsWith('ARCHIVED')); // drop blank + archived
+      .filter(p => {
+        // Drop blank names and anything prefixed ARCHIVED
+        if (!p.name || p.name.startsWith('ARCHIVED')) return false;
+        // Deduplicate: keep only the first (newest) scorecard per publisher
+        if (seen.has(p.name)) return false;
+        seen.add(p.name);
+        return true;
+      });
 
     return res.status(200).json({
       ok:        true,
